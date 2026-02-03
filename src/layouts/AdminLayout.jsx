@@ -29,6 +29,7 @@ const AdminLayout = () => {
 
     const navItems = [
         { path: '/', label: 'DASHBOARD', icon: LayoutDashboard },
+        { path: '/campaigns', label: 'CAMPAIGNS', icon: Gift },
         { path: '/links', label: 'MANAGE LINKS', icon: LinkIcon },
         { path: '/frames/new', label: 'NEW FRAME', icon: PlusSquare },
     ];
@@ -70,8 +71,8 @@ const AdminLayout = () => {
                             key={item.path}
                             onClick={() => navigate(item.path)}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all border-2 ${isActive(item.path)
-                                    ? 'bg-game-primary text-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] translate-y-[-2px]'
-                                    : 'bg-transparent border-transparent text-gray-400 hover:bg-white/5 hover:text-white'
+                                ? 'bg-game-primary text-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] translate-y-[-2px]'
+                                : 'bg-transparent border-transparent text-gray-400 hover:bg-white/5 hover:text-white'
                                 }`}
                         >
                             <item.icon size={20} />
@@ -125,8 +126,8 @@ const AdminLayout = () => {
                                     key={item.path}
                                     onClick={() => { navigate(item.path); setIsMobileMenuOpen(false); }}
                                     className={`w-full flex items-center gap-4 px-6 py-4 rounded-xl font-bold border-2 text-lg ${isActive(item.path)
-                                            ? 'bg-game-primary text-white border-black shadow-game'
-                                            : 'bg-white/5 border-transparent text-gray-300'
+                                        ? 'bg-game-primary text-white border-black shadow-game'
+                                        : 'bg-white/5 border-transparent text-gray-300'
                                         }`}
                                 >
                                     <item.icon size={24} />

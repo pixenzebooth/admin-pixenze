@@ -8,6 +8,7 @@ import NotFound from './pages/NotFound';
 
 // Lazy load admin pages
 const FrameManager = lazy(() => import('./pages/admin/FrameManager'));
+const CampaignManager = lazy(() => import('./pages/admin/CampaignManager'));
 const FrameEditor = lazy(() => import('./pages/admin/FrameEditor'));
 const LinkManager = lazy(() => import('./pages/admin/LinkManager'));
 const Login = lazy(() => import('./pages/Login'));
@@ -33,6 +34,7 @@ function App() {
                 </AdminRoute>
               }>
                 <Route path="/" element={<FrameManager />} />
+                <Route path="/campaigns" element={<CampaignManager />} />
                 <Route path="/frames/new" element={<FrameEditor />} />
                 <Route path="/frames/edit/:id" element={<FrameEditor />} />
                 <Route path="/links" element={<LinkManager />} />
