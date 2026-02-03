@@ -57,9 +57,17 @@ const LinkManager = () => {
     const navigate = useNavigate();
     const { showAlert } = useAlert();
     const [links, setLinks] = useState([]);
+    console.log("LinkManager Admin loaded v4 - Color pickers fixed");
     const [loading, setLoading] = useState(true);
     const [editingId, setEditingId] = useState(null);
-    const [formData, setFormData] = useState({ title: '', url: '', icon: 'Link', is_active: true });
+    const [formData, setFormData] = useState({
+        title: '',
+        url: '',
+        icon: 'Link',
+        is_active: true,
+        button_color: '#face10',
+        text_color: '#042493'
+    });
     const [showIconPicker, setShowIconPicker] = useState(false);
 
     useEffect(() => {
@@ -114,22 +122,33 @@ const LinkManager = () => {
 
     const handleEdit = (link) => {
         setEditingId(link.id);
-        setFormData({ title: link.title, url: link.url, icon: link.icon, is_active: link.is_active });
+        setFormData({
+            title: link.title,
+            url: link.url,
+            icon: link.icon,
+            is_active: link.is_active,
+            button_color: link.button_color || '#face10',
+            text_color: link.text_color || '#042493'
+        });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const resetForm = () => {
         setEditingId(null);
-        setFormData({ title: '', url: '', icon: 'Link', is_active: true });
+        setFormData({
+            title: '',
+            url: '',
+            icon: 'Link',
+            is_active: true,
+            button_color: '#face10',
+            text_color: '#042493'
+        });
     };
 
     const DynamicIcon = ({ name }) => {
         const Icon = LucideIcons[name] || LucideIcons.Link;
         return <Icon size={20} />;
     };
-
-    // Note: Reorder implementation requires updating 'order' field in DB on drag end
-    // For simplicity, we just display list for now. Drag-and-drop can be added if requested.
 
     return (
         <div className="relative">
@@ -142,7 +161,7 @@ const LinkManager = () => {
 
             <div className="max-w-4xl mx-auto z-10 relative">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-titan text-game-accent">LINK MANAGER</h1>
+                    <h1 className="text-3xl font-titan text-game-accent text-stroke drop-shadow-game text-center">LINK MANAGER</h1>
                 </div>
 
                 {/* EDITOR CARD */}
@@ -188,22 +207,86 @@ const LinkManager = () => {
                                     <span className="text-xs text-gray-500">CHANGE</span>
                                 </button>
                             </div>
-                            <div className="flex gap-2">
-                                {editingId && (
+                        </div>
+
+                        {/* COLOR PICKERS */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-xs font-bold text-gray-400 mb-1">BUTTON COLOR</label>
+                                <div className="flex items-center gap-2 bg-black/40 border-2 border-white/20 rounded-xl px-4 py-2">
+                                    <input
+                                        type="color"
+                                        className="w-10 h-10 rounded cursor-pointer bg-transparent border-none"
+                                        value={formData.button_color || '#face10'}
+                                        onChange={e => setFormData({ ...formData, button_color: e.target.value })}
+                                    />
+                                    <span className="text-sm font-mono text-gray-400 uppercase">{formData.button_color || '#face10'}</span>
                                     <button
-                                        onClick={resetForm}
-                                        className="px-6 py-3 rounded-xl font-bold bg-gray-600 border-2 border-black hover:bg-gray-500 transition"
+                                        onClick={() => setFormData({ ...formData, button_color: '#face10' })}
+                                        className="text-[10px] text-gray-500 hover:text-white ml-auto"
                                     >
-                                        CANCEL
+                                        RESET
                                     </button>
-                                )}
-                                <button
-                                    onClick={handleSave}
-                                    className="px-8 py-3 rounded-xl font-bold bg-game-success text-black border-2 border-black hover:brightness-110 flex items-center gap-2"
-                                >
-                                    <Save size={18} /> SAVE LINK
-                                </button>
+                                </div>
                             </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-400 mb-1">TEXT COLOR</label>
+                                <div className="flex items-center gap-2 bg-black/40 border-2 border-white/20 rounded-xl px-4 py-2">
+                                    <input
+                                        type="color"
+                                        className="w-10 h-10 rounded cursor-pointer bg-transparent border-none"
+                                        value={formData.text_color || '#042493'}
+                                        onChange={e => setFormData({ ...formData, text_color: e.target.value })}
+                                    />
+                                    <span className="text-sm font-mono text-gray-400 uppercase">{formData.text_color || '#042493'}</span>
+                                    <button
+                                        onClick={() => setFormData({ ...formData, text_color: '#042493' })}
+                                        className="text-[10px] text-gray-500 hover:text-white ml-auto"
+                                    >
+                                        RESET
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* LIVE PREVIEW */}
+                        <div className="bg-black/20 p-4 rounded-xl border border-white/10 mt-2">
+                            <label className="block text-xs font-bold text-gray-400 mb-2 text-center uppercase tracking-widest opacity-50">Live Preview</label>
+                            <div className="flex justify-center">
+                                <div
+                                    className="flex items-center gap-4 p-4 w-full max-w-sm rounded-xl text-xl relative overflow-hidden transition-all duration-200"
+                                    style={{
+                                        backgroundColor: formData.button_color || '#face10',
+                                        color: formData.text_color || '#042493',
+                                        border: '4px solid black',
+                                        fontFamily: '"Titan One", cursive',
+                                        boxShadow: '4px 4px 0px 0px rgba(0,0,0,0.4)'
+                                    }}
+                                >
+                                    <div className="p-2 bg-black/5 rounded-lg flex-shrink-0">
+                                        <DynamicIcon name={formData.icon} />
+                                    </div>
+                                    <span className="flex-1 text-left truncate">{formData.title || 'Link Title'}</span>
+                                    <LucideIcons.ArrowRight size={24} />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-2 mt-4">
+                            {editingId && (
+                                <button
+                                    onClick={resetForm}
+                                    className="px-6 py-3 rounded-xl font-bold bg-gray-600 border-2 border-black hover:bg-gray-500 transition shadow-game-sm hover:-translate-y-1 active:translate-y-0"
+                                >
+                                    CANCEL
+                                </button>
+                            )}
+                            <button
+                                onClick={handleSave}
+                                className="px-8 py-3 rounded-xl font-bold bg-game-success text-black border-2 border-black hover:brightness-110 flex items-center gap-2 shadow-game-sm hover:-translate-y-1 active:translate-y-0"
+                            >
+                                <Save size={18} /> SAVE LINK
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -220,15 +303,18 @@ const LinkManager = () => {
                                 className={`flex items-center gap-4 p-4 rounded-xl border-2 border-black/20 ${link.is_active ? 'bg-white/5' : 'bg-red-500/10'}`}
                             >
                                 <div className="text-gray-500 font-mono text-xl w-8 text-center">{index + 1}</div>
-                                <div className="p-3 bg-white/10 rounded-lg">
+                                <div
+                                    className="p-3 rounded-lg border-2 border-black shadow-sm"
+                                    style={{ backgroundColor: link.button_color || '#face10', color: link.text_color || '#042493' }}
+                                >
                                     <DynamicIcon name={link.icon} />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
-                                        <h3 className="font-bold text-lg truncate">{link.title}</h3>
+                                        <h3 className="font-bold text-lg truncate uppercase" style={{ fontFamily: '"Titan One", cursive' }}>{link.title}</h3>
                                         {!link.is_active && <span className="text-[10px] bg-red-500 text-white px-2 rounded-full">HIDDEN</span>}
                                     </div>
-                                    <p className="text-sm text-gray-400 truncate">{link.url}</p>
+                                    <p className="text-sm text-gray-400 truncate opacity-60">{link.url}</p>
                                 </div>
                                 <div className="flex gap-2">
                                     <button
@@ -250,7 +336,7 @@ const LinkManager = () => {
                     )}
 
                     {links.length === 0 && !loading && (
-                        <div className="text-center py-12 text-gray-500">
+                        <div className="text-center py-12 text-gray-500 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl">
                             No links found. Add your first link above!
                         </div>
                     )}
